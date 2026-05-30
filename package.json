@@ -1,5 +1,5 @@
 {
-  "name": "xrefjs",
+  "name": "xref",
   "version": "0.1.0",
   "description": "automated cross-references for html pages",
   "main": "index.js",

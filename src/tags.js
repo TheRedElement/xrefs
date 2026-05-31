@@ -9,13 +9,18 @@ class BibItem extends HTMLElement {
 	connectedCallback() {
 	}
 }
+/**hosts the body of a bibliography item*/
+class BibItemBody extends HTMLElement {
+	connectedCallback() {
+	}
+}
 /**hosts the  header of a bibliography item*/
 class BibItemHead extends HTMLElement {
 	connectedCallback() {
 	}
 }
-/**hosts the body of a bibliography item*/
-class BibItemBody extends HTMLElement {
+/**hosts the index of a bibliography item*/
+class BibItemIndex extends HTMLElement {
 	connectedCallback() {
 	}
 }
@@ -58,8 +63,9 @@ export function register() {
     customElements.define("tre-bib-hover", BibHoverText);
     customElements.define("tre-bibliography", Bibliography);
     customElements.define("tre-bib-item", BibItem);
-    customElements.define("tre-bib-item-head", BibItemHead);
     customElements.define("tre-bib-item-body", BibItemBody);
+    customElements.define("tre-bib-item-head", BibItemHead);
+    customElements.define("tre-bib-item-index", BibItemIndex);
     customElements.define("tre-cite", Cite);
 
     customElements.define("tre-glossary", Glossary);

@@ -5,11 +5,6 @@ import { register } from "./tags.js"
 
 /**custom style definitions to make things look pretty*/
 const xrefCss = `
-    html, body {
-        /* init counters */
-        counter-reset: bibindex 0;
-    }
-
     /* tooltips */
     .xrefs-tooltip {
         /* hide info */
@@ -49,12 +44,22 @@ const xrefCss = `
     tre-bibliography a:visited {
     }
     tre-bibliography tre-bib-item {
-        display: flex;
+        display: grid;
+        grid-template-columns: auto auto 1fr;
+        column-gap: 0.5em;
         margin-bottom: 0.5em;
+        text-align: justify;
     }
-    tre-bibliography tre-bib-item::before {
-        counter-increment: bibindex;
-        content: "[" counter(bibindex) "]\\00a0";
+    tre-bib-item-body {
+        /* outline: 1px solid cyan; */
+    }
+    tre-bib-item-head {
+        /* outline: 1px solid red; */
+    }
+    tre-bib-item-index {
+        width: 3em;
+        text-align: end;
+        /* outline: 1px solid magenta; */
     }
     tre-bibliography tre-bib-item-body > div {
         display: inline;
@@ -106,7 +111,7 @@ const xrefCss = `
         left: 50vw;
         transform: translateX(-47vw);
         width: 90%;
-    }
+}
 `
 
 /**base class for rendering cross references

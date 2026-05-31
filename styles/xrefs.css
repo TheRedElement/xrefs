@@ -42,12 +42,22 @@ tre-bibliography a:link,
 tre-bibliography a:visited {
 }
 tre-bibliography tre-bib-item {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    column-gap: 0.5em;
     margin-bottom: 0.5em;
+    text-align: justify;
 }
-tre-bibliography tre-bib-item::before {
-    counter-increment: bibindex;
-    content: "[" counter(bibindex) "]\00a0";
+tre-bib-item-body {
+    /* outline: 1px solid cyan; */
+}
+tre-bib-item-head {
+    /* outline: 1px solid red; */
+}
+tre-bib-item-index {
+    width: 3em;
+    text-align: end;
+    /* outline: 1px solid magenta; */
 }
 tre-bibliography tre-bib-item-body > div {
     display: inline;

@@ -300,7 +300,8 @@ export class BibRefsRenderer {
 	async renderBibliography() {
 		const bibElements = document.getElementsByTagName("tre-bibliography");
 		const citeElements = document.getElementsByTagName("tre-cite");
-        const bibRefs = await this.loadBibFiles();
+        let bibRefs = await this.loadBibFiles();
+
 
         for (const element of bibElements) {
 			let subBibliography = element.dataset["subbibliography"];									//indicates sub-bibliography to use
@@ -392,6 +393,12 @@ export class BibRefsRenderer {
     _extendBibRefs(bibRefs) {
 		const citeElements = document.getElementsByTagName("tre-cite");
 
+        //all references
+        for (const key of Object.keys((bibRefs))) {
+            bibRefs[key]["rank"] = undefined;   //init `"rank"`
+            bibRefs[key]["referenced"] = false; //init `"referenced"`
+        };
+
         //mentioned references
         let maxRank = 1;    //number of unique references for ieee
         for (let idx = 0; idx < citeElements.length; idx++) {
@@ -409,11 +416,37 @@ export class BibRefsRenderer {
             bibRefs[key]["referenced"] = true
         };
 
-        // //all references
-        // for (let idx = 0; idx < bibRefs.length; idx++) {
-        //     const bibRef = bibRefs[idx];
-        // }
 
+        //sorting based on different `citeStyle`s
+        if (this.citeStyle === "ieee") {
+            //sort based on appearance in text (referenced citations are displayed first)
+            bibRefs = Object.fromEntries(
+                Object.entries(bibRefs).sort(([, a], [, b]) => {
+                    const rankA = a["rank"] || Infinity;
+                    const rankB = b["rank"] || Infinity;
+                    return rankA - rankB
+                })
+            );
+        } else {
+            //sort alphabetically by default
+            //authors first, then year
+            bibRefs = Object.fromEntries(
+                Object.entries(bibRefs).sort(([, a], [, b]) => {
+                    const bibFieldsA = this._getBibFields(a, this.maxAuthors);
+                    const bibFieldsB = this._getBibFields(b, this.maxAuthors);
+                    const sortStrA = bibFieldsA["authors"] + bibFieldsA["year"];
+                    const sortStrB = bibFieldsB["authors"] + bibFieldsB["year"];
+                    return sortStrA.localeCompare(sortStrB);
+                })
+            );
+        };
+
+        //reassign rank to ensure all bib-refs have an integer rank
+        let curRank = 1;
+        for (const key of Object.keys(bibRefs)) {
+            bibRefs[key]["rank"] = curRank;
+            curRank += 1;
+        };
         return bibRefs
     }
 
@@ -489,7 +522,11 @@ export class BibRefsRenderer {
 			year: (
 				bibEntry["year"] ||
 				undefined
-			)
+			),
+            rank: (
+                bibEntry["rank"] ||
+                undefined
+            )
 		}
 		return bibFields
 	}
@@ -506,9 +543,14 @@ export class BibRefsRenderer {
 	 * 	- element containing the bibliography item
 	 */
 	_makeBibEntry(bibFields, bibEntryFormat) {
-
+        console.log(bibFields)
 		//init bibliography item
 		const bibItem = document.createElement("tre-bib-item");
+
+        //add index
+        const bibItemIndex = document.createElement("tre-bib-item-index");
+        bibItemIndex.innerText = `[${bibFields["rank"]}]`;
+        bibItem.appendChild(bibItemIndex);
 
 		//add head
 		const bibItemHead = document.createElement("tre-bib-item-head");
@@ -537,7 +579,6 @@ export class BibRefsRenderer {
             bibItemTitle.innerHTML = text;
             bibItemBody.appendChild(bibItemTitle);
         }
-
 
 		const bibItemJournal = document.createElement("div");
 		bibItemJournal.className = "bib-journal";

@@ -1,29 +1,6 @@
 /**bibrefs.js
  * renders bibliographies and citations in html documents
  *
- * - uses the following for defining styles etc.
- *   - `<meta>` for global styling
- *      - `citestyle` denotes the citation style to use
- *   - `<tre-cite>` tags for in-text citations
- *      - elements class denotes citation style (`p`, `t`)
- *      - `data-key` denotes the bib-key to use for looking up the reference
- *   - `<tre-bibliogrpahy>` for generating a bibliography
- *      - `data-bibtype` denotes the type of bibliography to produce
- *          - all entries in the .bib files or just the referenced ones
- *      - `data-maxauthors` spsecifies the maximum number of authors to display
- *          - overrides the default set in the class
- *      - `data-subbibliogrpahy` specifies the subbibliography to display
- *          - uses keywords in the .bib file
- *
- * HTMLElements
- * - `BibRefsError` - custom error
- * - `Bibliography` - html element
- * - `BibItem` - html element
- * - `BibItemHead` - html element
- * - `BibItemBody` - html element
- * - `Cite` - html element
- * - `BibHoverText` - html element
- *
  * Classes
  * - `BibRefsParser` - parses a set of `.bib` files
  * - `BibRefsRenderer` - renders citations, bibliography
@@ -32,68 +9,10 @@
  *
  */
 
-//########
-//Imports#
-//########
+/**imports*/
+import { BibRefsError } from "./errors.js";
 
-//#######
-//Errors#
-//#######
-class BibRefsError extends Error {
-  constructor(message) {
-    super(message);          //parent `Error` constructor
-    this.name = "BibRefsError";  //custom error name
-  }
-}
-
-//##############
-//HTML elements#
-//##############
-/**
- * class hosting a bibliography
- */
-class Bibliography extends HTMLElement {
-	connectedCallback() {
-	}
-}
-/**
- * class defining a bibliography item
- */
-class BibItem extends HTMLElement {
-	connectedCallback() {
-	}
-}
-/**
- * class defining header of a bibliography item
- */
-class BibItemHead extends HTMLElement {
-	connectedCallback() {
-	}
-}
-/**
- * class defining body of a bibliography item
- */
-class BibItemBody extends HTMLElement {
-	connectedCallback() {
-	}
-}
-
-/**
- * class displaying a glossary entry in the text
- */
-class Cite extends HTMLElement {
-	connectedCallback() {
-	}
-}
-
-class BibHoverText extends HTMLElement {
-	connectedCallback() {
-	}
-}
-
-//#########
-//Routines#
-//#########
+/**definitions*/
 /**
  * class to parse a bib-refs.bib file
  *  - will construct a json-like structure of the following schema
@@ -266,32 +185,31 @@ class BibRefsParser {
 /**
  * class containing all routines to render glossary entries in text and the entire glossary
  *
- * @param {string} bibpath
- *  - path to the bibliography database
- * @param {string} bibEntryFormat
- *  - format to use for bibliography entries
- *  - options
- *      - `"short"`: compact form
- *      - `"long"`: expanded form
- *  - the default is `"long"`
- * @param {string} citeStyle
- *  - citestyle to use
- *  - queried from `<mega name="citestyle">`
- *  - options
- *      - `"authoryear"`
- *      - `"ieee"`
- *  - the default is `"authoryear"`
- *      - also used if invalid style specified
- * @param {int} maxAuthors
- * 	- maximum number of authors to display
- * 	- overwritten by <tre-bibliography data-maxauthors="..."></tre-bibliography>
- *
- *
  */
 export class BibRefsRenderer {
 
     /**creates a renderer
      *
+     * @param {Array} bibpaths
+     *  - paths to the bibliography files
+     *  - have to be `.bib` files
+     * @param {string} bibEntryFormat
+     *  - format to use for bibliography entries
+     *  - options
+     *      - `"short"`: compact form
+     *      - `"long"`: expanded form
+     *  - the default is `"long"`
+     * @param {string} citeStyle
+     *  - citestyle to use
+     *  - queried from `<mega name="citestyle">`
+     *  - options
+     *      - `"authoryear"`
+     *      - `"ieee"`
+     *  - the default is `"authoryear"`
+     *      - also used if invalid style specified
+     * @param {int} maxAuthors
+     * 	- maximum number of authors to display
+     * 	- overwritten by <tre-bibliography data-maxauthors="..."></tre-bibliography>
      */
 	constructor(
         bibPaths,
@@ -331,7 +249,7 @@ export class BibRefsRenderer {
         //extend
         bibRefs = this._extendBibRefs(bibRefs);
 
-        console.log(bibRefs)
+        // console.log(bibRefs)
 		// console.log(bibRefs["Beck2022_SB9"]["title"])
 		// console.log(bibRefs["Beck2022_SB9"]["author"])
 		// console.log(bibRefs["Beck2024_GaiaBinaryRG"]["author"])
@@ -343,7 +261,7 @@ export class BibRefsRenderer {
 	 * function to render bib-ref entries in the text to specification
 	 * - will
 	 *      - look for all `<tre-cite>` elements in the html document
-	 *      - load `this.bibPaths` (the glossary database)
+	 *      - load `this.bibPaths` (the bibliography files)
 	 *      - use the `key` `data-attribute` (`data-key`) as a key to query `this.bibPaths`
 	 *      - use the elements `className` as the display mode
 	 *          - `t`: display like latex `\citet{}`
@@ -370,7 +288,7 @@ export class BibRefsRenderer {
 			let bibFields = this._getBibFields(bibRefs[key], 5);
 			let bibEntryContent = this._makeBibEntry(bibFields, bibEntryFormat);
 			let toolTip = document.createElement("tre-bib-hover");
-			toolTip.className = "tooltip";
+			toolTip.className = "xrefs-tooltip";
 			element.appendChild(toolTip);
 			toolTip.appendChild(bibEntryContent);
 		}
@@ -671,13 +589,4 @@ export class BibRefsRenderer {
 	}
 }
 
-//###########
-//Executions#
-//###########
-customElements.define("tre-bibliography", Bibliography);
-customElements.define("tre-bib-item", BibItem);
-customElements.define("tre-bib-item-head", BibItemHead);
-customElements.define("tre-bib-item-body", BibItemBody);
-customElements.define("tre-cite", Cite);
-customElements.define("tre-bib-hover", BibHoverText);
 

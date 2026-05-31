@@ -1,69 +1,63 @@
-
-//########
-//Imports#
-//########
-
-//#######
-//Errors#
-//#######
-class GlsError extends Error {
-  constructor(message) {
-    super(message);          //parent `Error` constructor
-    this.name = "GlsError";  //custom error name
-  }
-}
-
-
-//##############
-//HTML elements#
-//##############
-/**
- * class to hosting a glossary
+/**glossary.js
+ * renders glossary and glossary-references  in html documents
+ *
+ * Classes
+ * - `GlossaryRenderer` - renders in-text glossary references, glossary
+ *
+ * Functions
+ *
  */
-class Glossary extends HTMLElement {
-	connectedCallback() {
-	}
-}
-class GlossaryEntry extends HTMLElement {
-	connectedCallback() {
-	}
-}
 
-/**
- * class for displaying glossary entry in text
- */
-class GlsText extends HTMLElement {
-	connectedCallback() {
-	}
-}
-class GlsHoverText extends HTMLElement {
-	connectedCallback() {
-	}
-}
 
-//#########
-//Routines#
-//#########
+/**imports*
+import { GlsError } from "./errors";
+
+
+/**definitions*/
 /**
  * class containing all routines to render glossary entries in text and the entire glossary
- * 
- * Attributes
- * ----------
- * 	- `glspath`
- * 		- `string`
- * 		- path to the glossary database
+ *
  */
-class GlossaryRenderer {
-	constructor() {
-		this.glspath = `${BASEPATH}data/glossary.json`;
+export class GlossaryRenderer {
+
+    /**creates a renderer
+     *
+     * @param {string} glsPaths
+     *  - path to the glossary database
+     *  - has to be a `.json` file
+     */
+	constructor(
+        glsPaths,
+    ) {
+		this.glsPaths = glsPaths;
 	}
 
-	/**
-	 * function to render glossary entries in the text to specification
+    /**loads glossary files into json-object
+     *
+     * - will
+     *      - load all files specified in `this.glsPaths`
+     *      - parse them into a json object
+     *      - join all the json objects
+     * @returns {Object} `glossary`
+     *  - parsed glossary
+     */
+    async loadGlsFiles() {
+
+        //combine all glossary files
+        var glossary = {}; //init glossary
+        for (const path of this.glsPaths) {
+            const response =  await fetch(path);
+            const data = await response.json();
+            glossary = { ...data };
+        };
+        return glossary
+    }
+
+	/**renders glossary entries in the text to specification
 	 * - will
 	 *      - look for all `<tre-gls>` elements in the html document
-	 *      - load `this.glspath` (the glossary database)
-	 *      - use the `innerHTML` as a key to query `this.glspath`
+	 *      - load `this.glsPaths` (the glossary database)
+	 *      - use the `key` `data-attribute` (`data-key`) as a key to query `this.glsPaths`
 	 *      - use the elements `className` as the display mode
 	 *          - `first`:      display like first occurrence
 	 *          - `firstpl`:    display like first occurrence but pluralize
@@ -73,114 +67,101 @@ class GlossaryRenderer {
 	 *          - `shortpl`:    pluralized shortform displayed
 	 * 		- if `className` starts with a capital letter, the displayed texts first letter will also be capitalized
 	 */
-	renderText () {
+	async renderText() {
 		const glsElements = document.getElementsByTagName("tre-gls");
+        const glossary = await this.loadGlsFiles();
 
-		fetch(this.glspath)
-		.then(response => response.json())
-		.then(
-			glossary => {
+        for (let idx = 0; idx < glsElements.length; idx++) {
+            const element = glsElements[idx];           //current element
+            const key       = element.dataset["key"];   //get glossary key
+            let dispMode  = element.className;     	    //get display mode from class
 
-				for (const element of glsElements) {
-					const key       = element.innerHTML;    //get glossary key
-					let dispMode  = element.className;     	//get display mode from class
-					
-					//flags
-					let cap		= /^[A-Z]/g.test(dispMode)	//check if first letter is capital
-					
-					//convert to lowercase (to use same function for `cap` an no `cap`)
-					dispMode = dispMode.toLowerCase()
+            //flags
+            let cap		= /^[A-Z]/g.test(dispMode)	//check if first letter is capital
 
-					//fallback
-					let glsString = "<span class='todoLS'>glossary entry not found<span>"
-					//NOTE: sort alphabetically
-					if (dispMode === "first") {
-						glsString = this.first(glossary, key)
-					} else if (dispMode === "firstpl") {
-						glsString = this.firstpl(glossary, key)
-					} else if (dispMode === "long") {
-						glsString = this.long(glossary, key)
-					} else if (dispMode === "longpl") {
-						glsString = this.longpl(glossary, key)
-					} else if (dispMode === "short" | dispMode === "") {
-						glsString = this.short(glossary, key)
-					} else if (dispMode === "shortpl") {
-						glsString = this.shortpl(glossary, key)
-					} else {
-						//error if unsupported
-						throw new GlsError(`
-							unsupported 'class' (${dispMode}).
-							Currently supported are: 'first', 'firstpl', 'long', 'longpl', 'short', 'shortpl' and capitalized versions.
-							You can also omit the 'class', in which case 'short' will be used. 
-						`)
-					}
+            //convert to lowercase (to use same function for `cap` an no `cap`)
+            dispMode = dispMode.toLowerCase()
 
-					//apply to element
-					if (!cap) {
-						//no capitalization
-						element.innerHTML = glsString;
-					} else {
-						//first letter uppercase
-						element.innerHTML = glsString.charAt(0).toUpperCase() + glsString.slice(1);
-					}
+            //fallback
+            let glsString = "<span class='todoLS'>glossary entry not found<span>"
+            //NOTE: sort alphabetically
+            if (dispMode === "first") {
+                glsString = this.first(glossary, key)
+            } else if (dispMode === "firstpl") {
+                glsString = this.firstpl(glossary, key)
+            } else if (dispMode === "long") {
+                glsString = this.long(glossary, key)
+            } else if (dispMode === "longpl") {
+                glsString = this.longpl(glossary, key)
+            } else if (dispMode === "short" | dispMode === "") {
+                glsString = this.short(glossary, key)
+            } else if (dispMode === "shortpl") {
+                glsString = this.shortpl(glossary, key)
+            } else {
+                //error if unsupported
+                throw new GlsError(`
+                        unsupported 'class' (${dispMode}).
+                        Currently supported are: 'first', 'firstpl', 'long', 'longpl', 'short', 'shortpl' and capitalized versions.
+                        You can also omit the 'class', in which case 'short' will be used.
+                    `)
+            }
 
-					//add tooltip
-					let toolTip = "";
-					if (glossary[key]["long"]) {
-						toolTip += `${glossary[key]["long"]}<br>`;
-					}
-					if (glossary[key]["description"]) {
-						toolTip += `${glossary[key]["description"].join("")}`;
-					}
-					element.innerHTML += `<tre-gls-hover class="tooltip">${toolTip}</tre-gls-hover>`;
-				}
-			}
-		)
-	}
+            //apply to element
+            if (!cap) {
+                //no capitalization
+                element.innerHTML = glsString;
+            } else {
+                //first letter uppercase
+                element.innerHTML = glsString.charAt(0).toUpperCase() + glsString.slice(1);
+            }
 
-	/**
-	 * function to render the entire glossary
+            //add tooltip
+            let toolTip = "";
+            if (glossary[key]["long"]) {
+                toolTip += `${glossary[key]["long"]}<br>`;
+            }
+            if (glossary[key]["description"]) {
+                toolTip += `${glossary[key]["description"].join("")}`;
+            }
+            element.innerHTML += `<tre-gls-hover class="xrefs-tooltip">${toolTip}</tre-gls-hover>`;
+        }
+    }
+
+	/**renders glossary
+	 *
 	 */
-	renderGlossary() {
+	async renderGlossary() {
 		const glsElements = document.getElementsByTagName("tre-glossary");
+        const glossary = await this.loadGlsFiles();
 
-		fetch(this.glspath)
-		.then(response => response.json())
-		.then(
-			glossary => {
+        for (const element of glsElements) {
+            let glsContent	= ""
 
-				for (const element of glsElements) {
-					let glsContent	= ""
+            for (const entry in glossary) {
+                if (!entry.startsWith("\$schema")) {
+                    let glsEntryContent = `
+                                <div class="head">
+                                    ${glossary[entry]["short"].charAt(0).toUpperCase()}${glossary[entry]["short"].slice(1)} (${glossary[entry]["long"]})
+                                </div>
+                                <div class="body">
+                                    ${glossary[entry]["description"].join("")}
+                                </div>
+                                `
+                    glsEntryContent = glsEntryContent;
+                    glsContent += glsEntryContent + "<br>"
+                }
 
-					for (const entry in glossary) {
-						if (!entry.startsWith("\$schema")) {
-							let glsEntryContent = `
-								<div class="head">
-									${glossary[entry]["short"].charAt(0).toUpperCase()}${glossary[entry]["short"].slice(1)} (${glossary[entry]["long"]})
-								</div>
-								<div class="body">
-									${glossary[entry]["description"].join("")}
-								</div>
-								`
-							glsEntryContent = glsEntryContent;
-							glsContent += glsEntryContent + "<br>"
-						}
-						
-					}
-					element.innerHTML = glsContent
-				}
-			}
-		)						
+            }
+            element.innerHTML = glsContent
+        }
 	}
 
 	/**
 	 * methods to render different glossary displays in the text
-	 * @param {Object} glossary 
+	 * @param {Object} glossary
 	 *  - the glossary represented as a js object
-	 * @param {string} key 
+	 * @param {string} key
 	 *  - glossary key to access specific entry in `glossary`
-	 * @param {Element} element 
-	 *  - the html element to denoting where to display the gls entry
 	 */
 	first(glossary, key) {
 		//display first occurrence
@@ -215,7 +196,7 @@ class GlossaryRenderer {
 			glsString = glossary[key]["long"] + "s";
 		} else {
 			glsString = glossary[key]["longpl"];
-		}        
+		}
 		return glsString
 	}
 	short(glossary, key) {
@@ -231,19 +212,8 @@ class GlossaryRenderer {
 			glsString = glossary[key]["short"] + "s";
 		} else {
 			glsString = glossary[key]["shortpl"];
-		}        
+		}
 		return glsString
 	}
 }
 
-//###########
-//Executions#
-//###########
-customElements.define("tre-glossary", Glossary);
-customElements.define("tre-glossaryentry", GlossaryEntry);
-customElements.define("tre-gls", GlsText);
-customElements.define("tre-gls-hover", GlsHoverText);
-
-const glsR = new GlossaryRenderer()
-glsR.renderText()
-glsR.renderGlossary()

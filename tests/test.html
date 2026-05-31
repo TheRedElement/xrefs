@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles/xrefs.css">
     <title>xrefs tes</title>
 </head>
 <body>
@@ -11,13 +10,23 @@
 
     <main>
         <article>
-            <ul>
-                <li><tre-cite class="t" data-key="Steinwender2026_LStein"></tre-cite></li>
-                <li><tre-cite class="p" data-key="Grossmann2025_MESAGridModelling"></tre-cite></li>
-                <li><tre-cite data-key="Beck2024_GaiaBinaryRG"></tre-cite></li>
-            </ul>
+            <h1>In-text citations</h1>
+            <div style="
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                ">
+                <h3>class</h3>
+                <h3>example</h3>
+                <span>t</span>
+                <tre-cite class="t" data-key="Steinwender2026_LStein"></tre-cite>
+                <span>p</span>
+                <tre-cite class="p" data-key="Grossmann2025_MESAGridModelling"></tre-cite>
+                <span>undefined</span>
+                <tre-cite data-key="Beck2024_GaiaBinaryRG"></tre-cite>
+            </div>
         </article>
         <article>
+            <h1>Bibliography generation</h1>
             <section>
                 <h1>Only what's referenced</h1>
                 <tre-bibliography
@@ -46,8 +55,50 @@
                 ></tre-bibliography>
             </section>
         </article>
+        <article>
+            <h1>In-text glossary references</h1>
+            <div style="
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                ">
+                <h3>class</h3>
+                <h3>example</h3>
+                <span>first</span>
+                <tre-gls class="first" data-key="javascript"></tre-gls>
+                <span>firstpl</span>
+                <tre-gls class="firstpl" data-key="javascript"></tre-gls>
+                <span>First</span>
+                <tre-gls class="First" data-key="javascript"></tre-gls>
+                <span>Firstpl</span>
+                <tre-gls class="Firstpl" data-key="javascript"></tre-gls>
+                
+                <span>short</span>
+                <tre-gls class="shortpl" data-key="json"></tre-gls>
+                <span>shortpl</span>
+                <tre-gls class="short" data-key="json"></tre-gls>
+                <span>Short</span>
+                <tre-gls class="Short" data-key="json"></tre-gls>
+                <span>Shortpl</span>
+                <tre-gls class="Shortpl" data-key="json"></tre-gls>
+
+                <span>long</span>
+                <tre-gls class="long" data-key="julia"></tre-gls>
+                <span>longpl</span>
+                <tre-gls class="longpl" data-key="julia"></tre-gls>
+                <span>Long</span>
+                <tre-gls class="Long" data-key="julia"></tre-gls>
+                <span>Longpl</span>
+                <tre-gls class="Longpl" data-key="julia"></tre-gls>
+            </div>
+        </article>
+        <article>
+            <h1>Glossary generation</h1>
+            <tre-glossary></tre-glossary>
+        </article>
     </main>
-    <!-- "xrefs": "https://cdn.jsdelivr.net/npm/xrefs@0.1.0/dist/index.js" -->
+    <footer></footer>
+
+    <!-- `importmap` to load local scripts -->
     <script type="importmap">
     {
         "imports": {
@@ -56,6 +107,7 @@
     }
     </script>
 
+    <!-- Xrefs setup -->
     <script type="module">
         import { Xrefs } from "xrefs";
         Xrefs.initialize({
@@ -63,11 +115,21 @@
                 "../data/bib-refs1.bib",
                 "../data/bib-refs2.bib",
             ],
-            "bibEntryFormat": "long",
-            "citeStyle": "ieee",
+            "bibEntryFormat": [
+                "long"
+                "short",
+            ][0],
+            "citeStyle": [
+                "authoryear",
+                "ieee",
+            ][0],
             "maxAuthors": 5,
-        })
-        Xrefs.renderBibRefs();
+            "glsPaths": [
+                "../data/glossary.json",
+            ],
+        });
+
+        Xrefs.render();
         console.log(Xrefs)
     </script>
 </body>

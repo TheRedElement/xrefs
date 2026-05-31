@@ -309,6 +309,7 @@ export class BibRefsRenderer {
             let bibType = element.dataset["bibtype"];
             let bibEntryFormat = element.dataset["bibentryformat"] || this.bibEntryFormat
 
+            let bibEntryNumber = 1;
 			for (const entry in bibRefs) {
 				let bibFields = this._getBibFields(bibRefs[entry], maxAuthors);
 
@@ -329,8 +330,11 @@ export class BibRefsRenderer {
 					bibFields["authors"] = bibFields["authors"].replaceAll("Lukas", "Lukas</span>");
 
 					//create bibliography entry
-					const bibItem = this._makeBibEntry(bibFields, bibEntryFormat);
+					const bibItem = this._makeBibEntry(bibFields, bibEntryFormat, bibEntryNumber);
 					element.appendChild(bibItem);
+
+                    //next entry
+                    bibEntryNumber += 1;
 				}
 			}
 			// element.innerHTML = bibContent
@@ -422,8 +426,10 @@ export class BibRefsRenderer {
             //sort based on appearance in text (referenced citations are displayed first)
             bibRefs = Object.fromEntries(
                 Object.entries(bibRefs).sort(([, a], [, b]) => {
-                    const rankA = a["rank"] || Infinity;
-                    const rankB = b["rank"] || Infinity;
+                    const refA = a["referenced"];
+                    const refB = b["referenced"];
+                    const rankA = (refA) ? a["rank"] : Infinity;
+                    const rankB = (refB) ? b["rank"] : Infinity;
                     return rankA - rankB
                 })
             );
@@ -539,17 +545,25 @@ export class BibRefsRenderer {
      *  - options are
      *      - `"short"`: compact display
      *      - `"long"`: expanded display
+     * @param {Int} bibEntryNumber
+     *  - number of the bibliography entry
+     *      - sequentially increasing w.r.t. all elements in the bibliography
 	 * @returns {HTMLElement} bibItem
 	 * 	- element containing the bibliography item
 	 */
-	_makeBibEntry(bibFields, bibEntryFormat) {
-        console.log(bibFields)
+	_makeBibEntry(bibFields, bibEntryFormat, bibEntryNumber) {
 		//init bibliography item
 		const bibItem = document.createElement("tre-bib-item");
 
         //add index
         const bibItemIndex = document.createElement("tre-bib-item-index");
-        bibItemIndex.innerText = `[${bibFields["rank"]}]`;
+        if (this.citeStyle === "ieee") {
+            //reference order == index
+            bibItemIndex.innerText = `[${bibFields["rank"]}]`;
+        } else {
+            //alphabetical sorting (index is ascending sequence)
+            bibItemIndex.innerText = `[${bibEntryNumber}]`;
+        }
         bibItem.appendChild(bibItemIndex);
 
 		//add head

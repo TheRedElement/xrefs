@@ -1,4 +1,4 @@
-# xref
+# xrefs
 
 * pretty and consistent cross-references in HTML documents
 * customizations possible upon script loading

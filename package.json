@@ -1,6 +1,6 @@
 {
   "name": "xrefs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "automated cross-references for html pages",
   "main": "index.js",
   "scripts": {

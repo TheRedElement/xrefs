@@ -47,5 +47,5 @@
 ```
 
 
-> [NOTE]
+> [!NOTE]
 > you can check [test.html](./tests/test.html) for an example html file

@@ -1,0 +1,14 @@
+# Fdb version 4
+["pdflatex"] 1780185090.37199 "/home/lukas/github/xrefs/data/bib-refs2.bib" "bib-refs2.pdf" "bib-refs2" 1780185090.75745 2
+  "/etc/texmf/web2c/texmf.cnf" 1745561483.13783 475 c0e671620eb5563b2130f56340a5fde8 ""
+  "/home/lukas/github/xrefs/data/bib-refs2.bib" 1780185090.20495 731 7ac382116e9d28514566d8ae4b1aea00 ""
+  "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
+  "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1745561584 8214405 e9e8706dbdd9b7507454ed17a9cf3cf5 ""
+  "bib-refs2.aux" 1780184589.98958 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
+  "bib-refs2.bib" 1780185090.20495 731 7ac382116e9d28514566d8ae4b1aea00 ""
+  (generated)
+  "bib-refs2.aux"
+  "bib-refs2.log"
+  "bib-refs2.pdf"
+  (rewritten before read)

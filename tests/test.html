@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/xrefs.css">
+    <title>xrefs tes</title>
+</head>
+<body>
+    <header></header>
+
+    <main>
+        <article>
+            <ul>
+                <li><tre-cite class="t" data-key="Steinwender2026_LStein"></tre-cite></li>
+                <li><tre-cite class="p" data-key="Grossmann2025_MESAGridModelling"></tre-cite></li>
+                <li><tre-cite data-key="Beck2024_GaiaBinaryRG"></tre-cite></li>
+            </ul>
+        </article>
+        <article>
+            <section>
+                <h1>Only what's referenced</h1>
+                <tre-bibliography
+                    data-bibentryformat="short"
+                    data-bibtype="referenced"
+                    data-maxauthors="9"
+                    data-subbibliography=""
+                ></tre-bibliography>
+            </section>
+            <section>
+                <h1>Only bib-items with keyword "subbibliography1"</h1>
+                <tre-bibliography
+                    data-bibentryformat="long"
+                    data-bibtype="all"
+                    data-maxauthors="1"
+                    data-subbibliography="subbibliography1"
+                ></tre-bibliography>
+            </section>
+            <section>
+                <h1>All entries in all bib-refs</h1>
+                <tre-bibliography
+                    data-bibentryformat="short"
+                    data-bibtype="all"
+                    data-maxauthors="1"
+                    data-subbibliography=""
+                ></tre-bibliography>
+            </section>
+        </article>
+    </main>
+    <!-- "xrefs": "https://cdn.jsdelivr.net/npm/xrefs@0.1.0/dist/index.js" -->
+    <script type="importmap">
+    {
+        "imports": {
+            "xrefs": "../src/index.js"
+        }
+    }
+    </script>
+
+    <script type="module">
+        import { Xrefs } from "xrefs";
+        Xrefs.initialize({
+            "bibPaths": [
+                "../data/bib-refs1.bib",
+                "../data/bib-refs2.bib",
+            ],
+            "bibEntryFormat": "long",
+            "citeStyle": "ieee",
+            "maxAuthors": 5,
+        })
+        Xrefs.renderBibRefs();
+        console.log(Xrefs)
+    </script>
+</body>
+</html>

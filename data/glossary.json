@@ -1,0 +1,82 @@
+{
+    "javascript": {
+        "description": [
+            "Scripting language mainly used for interactive web content and applications."
+        ],
+		"links": [
+			"https://www.javascript.com/"
+		],
+		"references": [
+			""
+		],
+        "type": "software",
+        "short": "Java Script",
+        "long": "Java Script"
+    },    
+    "json": {
+        "description": [
+            "Structured file format specifically designed for Java Script. "
+        ],
+		"links": [
+			""
+		],
+		"references": [
+			""
+		],
+        "short": "json",
+        "long": "Java Script Object Notation"
+    },    
+    "julia": {
+        "description": [
+        ],
+		"links": [
+			"https://julialang.org/"
+		],
+		"references": [
+			"Bezanson2017_Julia"
+		],
+        "type": "software",
+        "short": "Julia",
+        "long": "Julia"
+    },    
+    "latex": {
+        "description": [
+        ],
+		"links": [
+			"https://www.latex-project.org/"
+		],
+		"references": [
+			""
+		],
+        "long": "$\\LaTeX$",
+        "short": "$\\LaTeX$"
+    },       
+    "linux": {
+        "description": [
+        ],
+		"links": [
+			"https://www.linux.org/"
+		],
+		"references": [
+			""
+		],
+        "type": "software",
+        "long": "Linux",
+        "short": "Linux"
+    },
+    "python": {
+        "description": [
+            "Popular all-purpose programming language. ",
+            "Used extensively in data-science and astronomy."
+        ],
+		"links": [
+			"https://www.python.org/"
+		],
+		"references": [
+			"VanRossum2009_Python3"
+		],
+        "type": "software",
+        "long": "Python",
+        "short": "Python"
+    }
+}

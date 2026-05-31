@@ -1,5 +1,5 @@
 {
-  "name": "xref",
+  "name": "xrefs",
   "version": "0.1.0",
   "description": "automated cross-references for html pages",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TheRedElement/xRefJs.git"
+    "url": "git@github.com:TheRedElement/xrefs.git"
   },
   "keywords": [
     "automation",
@@ -18,7 +18,7 @@
   "author": "Lukas Steinwender",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/TheRedElement/xRefJs/issues"
+    "url": "https://github.com/TheRedElement/xrefs/issues"
   },
-  "homepage": "https://github.com/TheRedElement/xRefJs#readme"
+  "homepage": "https://github.com/TheRedElement/xrefs#readme"
 }

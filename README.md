@@ -6,12 +6,16 @@
 ## Quickstart
 
 1. clone this git-repo into your project
-2. copy the code-snippet below to the bottom of your html `<body></body>`
+2. copy the
+    1. first code-snippet to your html `<head></head>`
+        1. needs to be pasted **before** any other `<link>` for firefox compatibility
+    2. second code-snippet below to the bottom of your html `<body></body>`
 3. replace `<path/to/repo/>` with the path pointing to the cloned repo
 4. customize the appearance using the fields in `Xrefs.initialize()`
 
 ```html
     <!-- `importmap` to load local scripts -->
+    <!-- before any other imports/links (firefox compatibility) -->
     <script type="importmap">
     {
         "imports": {

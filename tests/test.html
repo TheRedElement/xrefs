@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- <link rel="stylesheet" type="" href="../styles/xrefs.css"> -->
     <title>xrefs tes</title>
+
+    <!-- `importmap` to load local scripts -->
+    <!-- before any other imports/links (firefox compatibility) -->
+    <script type="importmap">
+    {
+        "imports": {
+            "xrefs": "../src/index.js"
+        }
+    }
+    </script>
+
 </head>
 <body>
     <header></header>
@@ -98,15 +109,6 @@
         </article>
     </main>
     <footer></footer>
-
-    <!-- `importmap` to load local scripts -->
-    <script type="importmap">
-    {
-        "imports": {
-            "xrefs": "../src/index.js"
-        }
-    }
-    </script>
 
     <!-- Xrefs setup -->
     <script type="module">
